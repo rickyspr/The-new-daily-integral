@@ -49,7 +49,7 @@ struct ContentView: View {
                             .font(.caption).foregroundColor(.secondary)
                         
                         HStack {
-                            // Vi renderar markören som ett blått streck för användaren
+                            // Vi renderar markören som ett streck för användaren
                             let displayLatex = inputAnswer
                                 .replacingOccurrences(of: "|", with: "\\color{black}{|}")
                             

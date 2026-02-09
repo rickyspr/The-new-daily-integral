@@ -68,7 +68,7 @@ struct MathKeyboard: View {
                 text = "\\frac{|}{ }"
             } else {
                 let current = text.replacingOccurrences(of: "|", with: "")
-                text = "\\frac{\(current)|}{ }"
+                text = "\\frac{\(current)}{|}"
             }
         } else {
             insertAtCursor(char)
