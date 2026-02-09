@@ -49,9 +49,9 @@ struct ContentView: View {
                             .font(.caption).foregroundColor(.secondary)
                         
                         HStack {
-                            // Vi renderar markören som ett blått streck för användaren
+                            // Vi renderar markören som ett streck för användaren
                             let displayLatex = inputAnswer
-                                .replacingOccurrences(of: "|", with: "\\color{blue}{|}")
+                                .replacingOccurrences(of: "|", with: "\\color{black}{|}")
                             
                             MathView(latex: displayLatex)
                                 .frame(height: 80)
@@ -65,8 +65,17 @@ struct ContentView: View {
                     
                     // Kontrollera
                     Button(action: {
-                        let cleanAnswer = inputAnswer.replacingOccurrences(of: "|", with: "").trimmingCharacters(in: .whitespaces)
-                        if cleanAnswer == task.answer {
+                        // 1. Ta bort markören
+                            let noCursor = inputAnswer.replacingOccurrences(of: "|", with: "")
+                            
+                            // 2. Ta bort ALLA mellanslag från användarens svar
+                            let userFinal = noCursor.replacingOccurrences(of: " ", with: "")
+                            
+                            // 3. Ta bort ALLA mellanslag från det rätta svaret i JSON
+                            let correctFinal = task.answer.replacingOccurrences(of: " ", with: "")
+                        print("Your answer: \(userFinal), Correct answer: \(correctFinal)")
+                        
+                        if userFinal == correctFinal {
                             completeTask()
                         }
                     }) {
@@ -74,7 +83,7 @@ struct ContentView: View {
                             .bold()
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(inputAnswer == "|" ? Color.gray : Color.blue)
+                            .background(inputAnswer == "|" ? Color.gray : Color.gray)
                             .foregroundColor(.white)
                             .cornerRadius(12)
                     }
