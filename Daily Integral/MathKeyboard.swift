@@ -3,13 +3,13 @@ import SwiftUI
 struct MathKeyboard: View {
     @Binding var text: String
     
-    // Layout baserad på din bild
+    // Uppdaterad layout för att rymma x, C och ln
     let rows = [
-        ["7", "8", "9", "×"],
+        ["7", "8", "9", "ln"],
         ["4", "5", "6", "/"],
         ["1", "2", "3", "+"],
         ["0", ".", "x", "-"],
-        ["^", "(", ")", "C"]
+        ["^", "C", "(", ")"] // 'C' här är nu bokstaven C för konstanten
     ]
     
     var body: some View {
@@ -18,11 +18,12 @@ struct MathKeyboard: View {
             HStack(spacing: 8) {
                 navButton(label: "chevron.left") { moveCursor(left: true) }
                 navButton(label: "chevron.right") { moveCursor(left: false) }
+                // Vi lägger till en dedikerad "Rensa allt"-knapp här uppe istället
+                navButton(label: "trash", isDelete: true) { text = "|" }
                 navButton(label: "delete.left", isDelete: true) { deleteAtCursor() }
             }
             .frame(height: 50)
             
-            // Knappsats
             ForEach(rows, id: \.self) { row in
                 HStack(spacing: 8) {
                     ForEach(row, id: \.self) { char in
@@ -46,7 +47,6 @@ struct MathKeyboard: View {
         }
     }
     
-    // Hjälpvy för nav-knappar
     func navButton(label: String, isDelete: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: label)
@@ -58,19 +58,12 @@ struct MathKeyboard: View {
         }
     }
 
-    // --- LOGIK ---
-
     func handleInput(_ char: String) {
-        if char == "C" {
-            text = "|"
-        } else if char == "×" {
-            insertAtCursor("*")
-        } else if char == "÷" {
-            insertAtCursor("/")
+        if char == "ln" {
+            insertAtCursor("\\ln(|)")
         } else if char == "^" {
             insertAtCursor("^{|}")
         } else if char == "/" {
-            // Bråk-logik: Om vi redan har text, sätt den i täljaren
             if text == "|" {
                 text = "\\frac{|}{ }"
             } else {
@@ -84,12 +77,9 @@ struct MathKeyboard: View {
 
     func insertAtCursor(_ newContent: String) {
         if let range = text.range(of: "|") {
-            // Om vi infogar en struktur med en egen markör (som ^{|}),
-            // ersätter vi den gamla markören helt.
             if newContent.contains("|") {
                 text.replaceSubrange(range, with: newContent)
             } else {
-                // Annars lägger vi till tecknet och behåller markören till höger
                 text.replaceSubrange(range, with: newContent + "|")
             }
         }
@@ -102,28 +92,22 @@ struct MathKeyboard: View {
         
         let currentPos = text.distance(from: text.startIndex, to: cursorIndex)
         var newPos = left ? currentPos - 1 : currentPos + 1
-        
-        // Gränskontroll
         newPos = max(0, min(tempText.count, newPos))
         
-        // SMART HOPP: Om vi landar på tecken som tillhör LaTeX-strukturen, hoppa över dem
-        let structuralChars: Set<Character> = ["{", "}", "\\", "f", "r", "a", "c", "^"]
+        // Uppdaterad lista för att inkludera 'l' och 'n' som strukturtecken
+        let structuralChars: Set<Character> = ["{", "}", "\\", "f", "r", "a", "c", "^", "l", "n"]
         
         if left {
-            // Om vi går till vänster, fortsätta backa tills vi hittar ett "skrivbart" tecken eller början
             while newPos > 0 && structuralChars.contains(tempText[tempText.index(tempText.startIndex, offsetBy: newPos)]) {
                 newPos -= 1
             }
         } else {
-            // Om vi går till höger, fortsätt framåt tills vi landar efter en struktur
             while newPos < tempText.count && structuralChars.contains(tempText[tempText.index(tempText.startIndex, offsetBy: newPos - 1)]) {
                 newPos += 1
             }
         }
         
-        // Säkerställ att newPos fortfarande är inom ramarna efter hoppen
         newPos = max(0, min(tempText.count, newPos))
-        
         let insertIdx = tempText.index(tempText.startIndex, offsetBy: newPos)
         tempText.insert("|", at: insertIdx)
         text = tempText
@@ -132,6 +116,15 @@ struct MathKeyboard: View {
     func deleteAtCursor() {
         guard let cursorIndex = text.firstIndex(of: "|"), cursorIndex != text.startIndex else { return }
         let indexBefore = text.index(before: cursorIndex)
-        text.remove(at: indexBefore)
+        
+        // Om vi raderar precis efter 'n' i '\ln', radera hela '\ln'
+        if text.prefix(upTo: cursorIndex).hasSuffix("\\ln") {
+            let startOfLn = text.index(indexBefore, offsetBy: -2)
+            text.removeSubrange(startOfLn..<cursorIndex)
+        } else {
+            text.remove(at: indexBefore)
+        }
+        
+        if !text.contains("|") { text = "|" }
     }
 }
