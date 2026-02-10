@@ -7,6 +7,14 @@ struct ContentView: View {
     @State private var inputAnswer = "|" // Starta med markör
     @State private var hasSolvedToday = false
     
+    // För fel svar animation:
+    @State private var isError = false
+    @State private var shakeOffset: CGFloat = 0
+    
+    // För poängsystemet
+    @State private var totalScore = UserDefaults.standard.integer(forKey: "total_score")
+    @State private var hasFailedCurrentTask = false // Håller koll på om man gjort fel på just denna fråga
+    
     var dayKey: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -18,12 +26,43 @@ struct ContentView: View {
         let dayOfYear = Calendar.current.ordinality(of: .day, in: .year, for: Date()) ?? 0
         return integrals[dayOfYear % integrals.count]
     }
+    var levelNumber: Int {
+        if totalScore < 50 { return 1 }
+        else if totalScore < 150 { return 2 }
+        else if totalScore < 300 { return 3 }
+        else { return 4 }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             if hasSolvedToday {
                 successView
             } else if let task = dailyTask {
+                // Lägg in detta högst upp i din huvud-VStack (i ContentView)
+                HStack {
+                    // Poäng-sektionen
+                    HStack(spacing: 5) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                        Text("Poäng: \(totalScore)")
+                            .font(.system(.title3, design: .rounded))
+                            .bold()
+                    }
+                    
+                    Spacer() // Trycker isär poäng och level
+                    
+                    // Level-sektionen
+                    HStack(spacing: 5) {
+                        Image(systemName: "bolt.fill") // Bytte till blixt för att skilja dem åt visuellt
+                            .foregroundColor(.orange)
+                        Text("Level: \(levelNumber)")
+                            .font(.system(.title3, design: .rounded))
+                            .bold()
+                    }
+                }
+                .padding(.horizontal)
+                .padding(.top, 10)
+                
                 VStack(spacing: 20) {
                     Text("The Daily Integral")
                         .font(.system(size: 28, weight: .bold, design: .serif))
@@ -59,7 +98,11 @@ struct ContentView: View {
                         }
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background(RoundedRectangle(cornerRadius: 12).stroke(Color.blue, lineWidth: 2))
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(isError ? Color.red : Color.blue, lineWidth: 2)
+                        )
+                        .offset(x: shakeOffset)
                     }
                     .padding(.horizontal)
                     
@@ -73,10 +116,13 @@ struct ContentView: View {
                             
                             // 3. Ta bort ALLA mellanslag från det rätta svaret i JSON
                             let correctFinal = task.answer.replacingOccurrences(of: " ", with: "")
-                        print("Your answer: \(userFinal), Correct answer: \(correctFinal)")
                         
                         if userFinal == correctFinal {
+                            updateScore()
                             completeTask()
+                        } else{
+                            hasFailedCurrentTask = true
+                            triggerErrorFeedback()
                         }
                     }) {
                         Text("Kontrollera svar")
@@ -120,6 +166,41 @@ struct ContentView: View {
     func completeTask() {
         UserDefaults.standard.set(true, forKey: dayKey)
         withAnimation(.spring()) { hasSolvedToday = true }
+    }
+    func triggerErrorFeedback() {
+        // 1. Ändra färg till röd
+        withAnimation(.default) {
+            isError = true
+        }
+        
+        // 2. Skapa en "haptisk" vibration (fysisk skakning i mobilen)
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.error)
+        
+        // 3. Skak-animation (vänster-höger)
+        withAnimation(.spring(response: 0.2, dampingFraction: 0.2, blendDuration: 0.2)) {
+            shakeOffset = -10
+        }
+        
+        // Återställ position och färg efter en kort stund
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            withAnimation(.default) {
+                shakeOffset = 0
+                isError = false
+            }
+        }
+    }
+    func updateScore() {
+        if !hasFailedCurrentTask {
+            // Rätt på första försöket!
+            totalScore += 10
+        }
+        else {
+            // Fel svar
+            totalScore -= 5
+            hasFailedCurrentTask = true
+            UserDefaults.standard.set(totalScore, forKey: "total_score")
+        }
     }
 }
 
