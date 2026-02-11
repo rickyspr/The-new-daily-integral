@@ -3,7 +3,7 @@ import SwiftUI
 import SwiftUI
 
 struct ContentView: View {
-    @State private var integrals = loadIntegrals()
+    @State private var integrals: [Integral] = []
     @State private var inputAnswer = "|" // Starta med markör
     @State private var hasSolvedToday = false
     
@@ -142,6 +142,7 @@ struct ContentView: View {
             }
         }
         .onAppear {
+            integrals = loadIntegrals(for: levelNumber)
             hasSolvedToday = UserDefaults.standard.bool(forKey: dayKey)
         }
     }
@@ -193,7 +194,7 @@ struct ContentView: View {
     func updateScore() {
         if !hasFailedCurrentTask {
             // Rätt på första försöket!
-            totalScore += 10
+            totalScore += 50
         }
         else {
             // Fel svar

@@ -1,10 +1,26 @@
 import Foundation
 
-func loadIntegrals() -> [Integral] {
+func loadIntegrals(for level: Int) -> [Integral] {
     // 1. Hitta filen i app-paketet
-    guard let url = Bundle.main.url(forResource: "integrals", withExtension: "json") else {
-        return []
-    }
+    
+    let fileName: String
+    switch level {
+        case 1:
+            fileName = "integrals"
+        case 2:
+            fileName = "integralsLevel2"
+        case 3:
+            fileName = "integralsLevel3"
+        default:
+            fileName = "integrals" // Standardfall
+        }
+        
+        // 2. Hitta filen baserat på namnet vi valde
+        guard let url = Bundle.main.url(forResource: fileName, withExtension: "json") else {
+            print("Kunde inte hitta filen: \(fileName).json")
+            return []
+        }
+    
     
     do {
         // 2. Läs rådatan

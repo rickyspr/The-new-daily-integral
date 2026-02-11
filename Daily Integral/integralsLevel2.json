@@ -1,10 +1,5 @@
 [
   {
-    "question": "f(x) = \\int x^{2} \\, dx",
-    "answer": "\\frac{x^{3}}{3} + C",
-    "hint": "Använd potensregeln: Lägg till 1 i exponenten och dela med det nya talet. Glöm inte + C!"
-  },
-  {
     "question": "f(x) = \\int \\frac{1}{x} \\, dx",
     "answer": "\\ln(x) + C",
     "hint": "Vilken funktion har 1/x som derivata? Tänk på naturliga logaritmer."
