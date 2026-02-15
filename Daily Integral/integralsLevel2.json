@@ -1,37 +1,10 @@
 [
-  {
-    "question": "f(x) = \\int \\frac{1}{x} \\, dx",
-    "answer": "\\ln(x) + C",
-    "hint": "Vilken funktion har 1/x som derivata? Tänk på naturliga logaritmer."
-  },
-  {
-    "question": "f(x) = \\int (3x^{2} + 2x) \\, dx",
-    "answer": "x^{3} + x^{2} + C",
-    "hint": "Integrera term för term. 3x²/3 blir x³ och 2x²/2 blir x²."
-  },
-  {
-    "question": "f(x) = \\int \\sin(x) \\, dx",
-    "answer": "-\\cos(x) + C",
-    "hint": "Var försiktig med tecknet! Derivatan av cos(x) är -sin(x)."
-  },
-  {
-    "question": "f(x) = \\int \\frac{1}{x^{2}} \\, dx",
-    "answer": "-\\frac{1}{x} + C",
-    "hint": "Skriv om som x^{-2} och använd potensregeln."
-  },
-  {
-    "question": "f(x) = \\int a \\, dx",
-    "answer": "ax + C",
-    "hint": "Integralen av en konstant 'a' med avseende på x är ax + C."
-  },
-  {
-    "question": "f(x) = \\int \\sqrt{x} \\, dx",
-    "answer": "\\frac{2x^{3/2}}{3} + C",
-    "hint": "Skriv som x^{1/2}. Primitiv funktion blir (x^{3/2}) / (3/2)."
-  },
-  {
-    "question": "f(x) = \\int (e^{x} + \\cos(x)) \\, dx",
-    "answer": "e^{x} + \\sin(x) + C",
-    "hint": "Hantera de två termerna separat och lägg till konstanten på slutet."
-  }
+  { "question": "f(x) = \\int e^{-x} \\, dx", "answer": "-e^{-x} + C", "hint": "Dela med den inre derivatan som är -1." },
+  { "question": "f(x) = \\int \\sin(4x) \\, dx", "answer": "-\\frac{\\cos(4x)}{4} + C", "hint": "Dela med inre derivatan 4." },
+  { "question": "f(x) = \\int \\frac{3}{x} \\, dx", "answer": "3\\ln(x) + C", "hint": "Konstanten 3 hamnar framför ln(x)." },
+  { "question": "f(x) = \\int (e^{x} + e^{-x}) \\, dx", "answer": "e^{x} - e^{-x} + C", "hint": "Integrera termerna var för sig." },
+  { "question": "f(x) = \\int \\frac{1}{x+5} \\, dx", "answer": "\\ln(x+5) + C", "hint": "Inre derivatan är 1, så det blir bara ln av nämnaren." },
+  { "question": "f(x) = \\int \\cos(\\frac{x}{2}) \\, dx", "answer": "2\\sin(\\frac{x}{2}) + C", "hint": "Dela med 1/2 är samma sak som att multiplicera med 2." },
+  { "question": "f(x) = \\int \\frac{1}{\\sqrt{1-x^{2}}} \\, dx", "answer": "\\arcsin(x) + C", "hint": "Detta är standardintegralen för arcsin." },
+  { "question": "f(x) = \\int 5^{x} \\, dx", "answer": "\\frac{5^{x}}{\\ln(5)} + C", "hint": "För a^{x} delar man med ln(a)." }
 ]

@@ -1,0 +1,10 @@
+[
+  { "question": "f(x) = \\int x^{2} e^{x} \\, dx", "answer": "x^{2}e^{x} - 2xe^{x} + 2e^{x} + C", "hint": "Använd partiell integration två gånger." },
+  { "question": "f(x) = \\int x \\ln(x) \\, dx", "answer": "\\frac{x^{2}\\ln(x)}{2} - \\frac{x^{2}}{4} + C", "hint": "Partiell integration: integrera x och derivera ln(x)." },
+  { "question": "f(x) = \\int \\cos^{2}(x) \\, dx", "answer": "\\frac{x}{2} + \\frac{\\sin(2x)}{4} + C", "hint": "Skriv om cos²(x) som (1 + cos(2x))/2." },
+  { "question": "f(x) = \\int \\frac{x}{x^{2}+1} \\, dx", "answer": "\\frac{\\ln(x^{2}+1)}{2} + C", "hint": "Substitution: u = x²+1 ger du = 2x dx." },
+  { "question": "f(x) = \\int \\tan(x) \\, dx", "answer": "-\\ln(\\cos(x)) + C", "hint": "Skriv som sin(x)/cos(x) och använd substitution u = cos(x)." },
+  { "question": "f(x) = \\int \\frac{\\ln(x)^{2}}{x} \\, dx", "answer": "\\frac{\\ln(x)^{3}}{3} + C", "hint": "Substitution u = ln(x) ger du = 1/x dx." },
+  { "question": "f(x) = \\int e^{x}\\sin(x) \\, dx", "answer": "\\frac{e^{x}(\\sin(x)-\\cos(x))}{2} + C", "hint": "Partiell integration två gånger tills integralen återkommer." },
+  { "question": "f(x) = \\int \\frac{1}{x\\ln(x)} \\, dx", "answer": "\\ln(\\ln(x)) + C", "hint": "Substitution u = ln(x)." }
+]
